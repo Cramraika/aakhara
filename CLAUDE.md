@@ -96,6 +96,59 @@ This project can trigger and receive n8n workflows at `https://n8n.chinmayramrai
 - **Auth Header:** `X-API-Key: <N8N_API_KEY>`
 - **Workflow repo:** github.com/Cramraika/n8n-workflows (private)
 
+---
+
+## Roadmap / Planned
+
+The current build closes the gap between the product vision (real-time Hinglish voice roleplay, 600ms-1s latency, per README § Features) and the text-only MVP (per Known Product Limitations). Items below are ordered by dependency: voice integration unblocks the scoring and multi-tenant tracks.
+
+### Phase 1 — Real voice integration (target: Q3 2026)
+Commitment against the "No real voice/speech integration yet" limitation.
+
+- **Stack decision**: **Deepgram (STT) + ElevenLabs (TTS) + Grok/OpenAI (LLM)**. Deepgram chosen for STT because its Nova-2/3 models handle Hindi-English code-switching (Hinglish) natively with sub-300ms streaming latency — OpenAI Realtime and Whisper underperform on code-switched Indic audio. ElevenLabs chosen for TTS for natural Hindi voices (Aria/Adam + custom clones) that keep the "feels like a real prospect" bar BDEs need. LLM stays pluggable via existing `OPENAI_API_KEY` abstraction to also address the "single OpenAI dependency" limitation.
+- **Architecture sketch**:
+  ```
+  Browser (WebRTC/MediaStream capture)
+    ↔ FastAPI WebSocket (/ws/roleplay/{session_id})
+      → Deepgram streaming STT  (partial + final transcripts)
+      → Grok/OpenAI chat (scenario prompt + Hinglish persona)
+      → ElevenLabs streaming TTS (flush on sentence boundary)
+    ↔ Browser audio playback (MediaSource / AudioWorklet)
+  ```
+  - Backend adds `backend/voice/` module: `stt_deepgram.py`, `tts_elevenlabs.py`, `session_loop.py` (orchestrator).
+  - New envs: `DEEPGRAM_API_KEY`, `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID`.
+  - New PG table: `voice_turns` (session_id, role, audio_s3_key, transcript, latency_ms, created_at).
+  - Fallback: if STT/TTS quota exhausted, session degrades to existing text chat (keeps BDE unblocked).
+- **Cost concern (BLOCKING for rollout sizing)**: At ~300 BDEs × 15 min/session × 4 sessions/week, voice processing runs ~300 × 60 min/week = 18,000 min/month. Deepgram streaming ≈ $0.0043/min + ElevenLabs turbo ≈ $0.18/1k chars (≈ $0.02/min assistant speech) ≈ **$0.03–0.05 per minute end-to-end, or ~$540–900/month** for full rollout. Grok/OpenAI LLM adds ~$200–400/month at current rates. Need explicit CN finance sign-off or usage caps (e.g., 2 sessions/week/BDE) before Phase 1 ships. Mitigations: cache common scenario openings, prefer Deepgram Nova-2 over Nova-3, batch TTS per sentence.
+
+### Phase 2 — Recording, transcript review, and automated scoring (target: Q4 2026)
+Commitment against the "No historical performance trending across sessions" limitation.
+
+- Persist full session audio to S3/Supabase Storage (pgsql metadata, object storage for blobs) with 90-day retention.
+- Extend `feedback.py` to score transcripts on concrete rubrics: objection-handling count, filler-word rate, Hinglish code-switch appropriateness, close-attempt detection, scenario-goal completion %.
+- Manager dashboard gains: trendlines per BDE over N sessions, cohort comparison, flagged sessions for coaching review.
+- Output: weekly "Top 3 coaching opportunities" digest per manager (wired via existing n8n webhook integration).
+
+### Phase 3 — Multi-tenant / white-label (exploratory: 2027)
+If CN Product validates external demand (other bootcamps, sales-training vendors, enterprise sales teams).
+
+- Introduce `tenant_id` scoping across `users`, `teams`, `templates`, `sessions`, `voice_turns` (additive migration).
+- Per-tenant branding (logo, color tokens via Tailwind CSS vars), per-tenant LLM prompt shims (e.g., "US cold-calling" vs "CN bootcamp admissions").
+- Per-tenant API keys and isolated n8n workflows.
+- Billing surface: seat-based (per BDE/month) + usage-based voice overage — leverage existing Stripe MCP integration.
+- Commercial angle: position as "Roleplay-as-a-Service" for Indian edtech / SaaS SDR teams. Initial wedge = Hinglish voice (moat: Deepgram + ElevenLabs Hindi tuning + CN's scenario library).
+
+### Phase 4 — Sponsor / integration angle (opportunistic)
+- Deepgram and ElevenLabs both run India developer programs with credits/co-marketing — pursue once Phase 1 ships and usage data exists.
+- Potential CRM integrations (Salesforce, LeadSquared, HubSpot) so managers can trigger roleplay assignments from real pipeline deals.
+
+### Explicitly out of scope (for now)
+- Mobile-native app (web + PWA covers BDE use case).
+- Non-Hinglish languages (English-only / regional Indic) — revisit only if multi-tenant Phase 3 closes a deal that needs it.
+- On-prem / air-gapped deployment — costs and vendor-lock-in on Deepgram/ElevenLabs make this a hard no until a specific enterprise deal requires it.
+
+---
+
 ### Security Rules
 - NEVER hardcode API keys, secrets, or credentials in any file
 - NEVER pass credentials as inline env vars in Bash commands
