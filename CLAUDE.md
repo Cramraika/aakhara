@@ -8,14 +8,22 @@
 
 **Sources**: `~/.claude/conventions/universal-claudemd.md` (laws, MCP routing, lifecycle, rent rubric) + `~/.claude/conventions/project-hygiene.md` (doc placement, cleanup, local-workspaces). Read relevant sections before significant work. Re-audit due **2026-07-19**. Sync: `~/.claude/scripts/sync-preambles.py`.
 
+---
+
+## References
+
+- `~/.claude/conventions/universal-claudemd.md` — universal laws, MCP routing, capability resolution
+- `~/.claude/conventions/project-hygiene.md` — doc placement, cleanup, scripts layout
+- `docs/ENVIRONMENTS.md` — local/Codespaces setup, CI pipeline summary, troubleshooting
+
 ## Product Overview
 
 | Product | Sales Training Roleplay Platform |
 |---------|----------------------------------|
 | **What it does** | Real-time voice-based Hinglish chatbot that trains sales reps through AI-powered roleplay simulations. Managers create training templates (scenarios), assign teams, and review AI-generated feedback on rep performance. |
-| **Who uses it** | Sales managers (template creation, team management, feedback review). BDEs/sales reps (roleplay practice sessions). Org admins (team structure). All at Coding Ninjas. |
-| **Status** | Stable/Maintenance (Tier C). Deployed via Docker Compose. |
-| **Organization** | SMPL562 |
+| **Who uses it** | Sales managers (template creation, team management, feedback review). ~300 BDEs / sales reps at Coding Ninjas (roleplay practice). Org admins (team structure). |
+| **Status** | Stable / Maintenance (Tier C). Local-only / Docker Compose; no production deploy yet. |
+| **Organization** | SMPL562 (GitHub remote) |
 
 ## Product Features and User Journeys
 
@@ -43,20 +51,45 @@
 - No real voice/speech integration yet (text-based roleplay simulating voice scenarios)
 - No historical performance trending across sessions
 - Single OpenAI model dependency (no fallback provider)
+- No observability stack wired — only backend file logs (`backend/chatbot.log`)
+- No production deployment; Docker Compose is the only run mode
 
 ---
 
 ## Technical Reference
 
 ### Stack
-- FastAPI + React 18 + PostgreSQL 15 + Docker Compose + SQLAlchemy + TailwindCSS
+- **Backend**: FastAPI 0.115 + SQLAlchemy 2.0 + aiohttp + python-dotenv (Python 3.11)
+- **Frontend**: React 18 + react-scripts 5 + react-router-dom 6 + axios + TailwindCSS 3
+- **DB**: PostgreSQL 15 (Docker `postgres:15` image, volume-backed)
+- **Runtime**: Docker Compose (4 services: backend, frontend, db, dev)
+- **LLM**: OpenAI Realtime API (via WebSocket) — `OPENAI_API_KEY`
+
+### Active Role-Lanes
+- **Engineer** — FastAPI + WebSocket + SQLAlchemy; React 18 frontend; Docker Compose orchestration
+- **DBA** — PostgreSQL 15 schema via SQLAlchemy models (`backend/models.py`) + `init_db()` bootstrap
+- **Architect** (voice roadmap) — Deepgram + ElevenLabs integration design (see Roadmap)
+- **Planner** — Phase-gated roadmap with explicit cost-sign-off blocker
+- **Tester** — CI-level lint + build + Docker image smoke only (no unit/integration suite)
+- **Writer** — docs/ENVIRONMENTS.md, CLAUDE.md (doc-maintainer: user; Claude updates only on explicit request — README is **frozen** per hygiene § README curation)
+
+### Dependency Graph
+Upstream / runtime dependencies:
+- **OpenAI Realtime API** (chat + voice) — blocking for roleplay sessions; no fallback provider today
+- **PostgreSQL 15** — templates, teams, users, sessions; Docker volume `postgres_data`
+- **n8n** (`https://n8n.chinmayramraika.in`) — optional workflow webhooks (envs: `N8N_WEBHOOK_URL`, `N8N_API_KEY`)
+- **Codespaces devcontainer** — optional cloud dev env (`.devcontainer/devcontainer.json`)
+
+Downstream / deployment:
+- **None in production.** No Coolify / Render / Portainer stack wired. Docker Compose on developer machines only. Voice roadmap Phase 1 will require a deploy decision (likely Coolify on Main_host or Vagaryvoice per VPS inventory).
 
 ### File Organization
 - Never save working files to root folder
-- `backend/` - FastAPI application (`main.py`, `database.py`, `models.py`, `schemas.py`, `crud.py`, `feedback.py`)
-- `frontend/` - React application (Create React App with react-router-dom, axios, TailwindCSS)
-- `docker-compose.yml` - Orchestrates backend, frontend, db, and dev services
-- `.env.example` - Environment variable template
+- `backend/` — FastAPI app: `main.py`, `database.py`, `models.py`, `schemas.py`, `crud.py`, `feedback.py`
+- `frontend/` — React (CRA): `src/App.jsx`, `src/components/`, `src/wavtools.js` (AudioWorklet shim)
+- `docker-compose.yml` — backend + frontend + db + dev service orchestration
+- `docs/ENVIRONMENTS.md` — environment reference (single doc; do NOT invent new top-level dirs)
+- `.env.example` — required-env template (OpenAI, n8n)
 
 ### Build & Test
 ```bash
@@ -75,26 +108,24 @@ cd frontend
 npm install
 npm start                          # Dev server on port 3000
 npm run build                      # Production build
-npm test                           # Run tests
+npm test                           # Run tests (no suite today; scaffold-only)
 ```
 
+CI runs on GitHub-hosted `ubuntu-latest` — lint-backend (flake8 E9/F63/F7 + pip-audit), build-frontend (npm install + build + audit), build-docker (backend image, no push), summary.
+
 ### Environment Variables
-- `OPENAI_API_KEY` - OpenAI API key for conversational AI
-- `DATABASE_URL` - PostgreSQL connection string (default: `postgresql://user:password@localhost:5432/hinglish_chatbot`)
+- `OPENAI_API_KEY` — OpenAI Realtime API (required)
+- `DATABASE_URL` — Postgres DSN; defaults differ for Docker (`db:5432`) vs Codespaces/standalone (`localhost:5432`)
+- `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` — compose-level (default `user` / `password` / `hinglish_chatbot`)
+- `N8N_WEBHOOK_URL`, `N8N_API_KEY` — optional n8n integration
 
 ### Key Ports
-- Backend: 8000
-- Frontend: 3000
-- PostgreSQL: 5432
+- Backend: 8000 — Frontend: 3000 — PostgreSQL: 5432
 
-### n8n Workflow Automation
-
-This project can trigger and receive n8n workflows at `https://n8n.chinmayramraika.in`.
-
-- **Webhook URL:** Set in `N8N_WEBHOOK_URL` env var
-- **API Key:** Set in `N8N_API_KEY` env var (unique per project)
-- **Auth Header:** `X-API-Key: <N8N_API_KEY>`
-- **Workflow repo:** github.com/Cramraika/n8n-workflows (private)
+### Observability
+- **Current**: backend file logging only (`backend/chatbot.log`, gitignored). No Sentry / GlitchTip / Grafana / Uptime Kuma project. No metrics export. No distributed tracing.
+- **Gap acknowledged**: For a stable tool used by ~300 BDEs, at minimum wire Sentry (local MCP already configured at org `vagary-life-pvt-ltd`) for backend unhandled exceptions and front-end runtime errors. Phase 1 voice rollout will harden this need (STT/TTS latency + API-error rates must be observable).
+- **When to invoke Grafana MCP**: only after the stack graduates to VPS hosting; until then, file logs suffice.
 
 ---
 
@@ -149,7 +180,37 @@ If CN Product validates external demand (other bootcamps, sales-training vendors
 
 ---
 
-### Security Rules
+## Deployment Environments
+
+- **Local / Codespaces**: Docker Compose (`backend` 8000, `frontend` 3000, `db` 5432, `dev` sleeps forever). `docs/ENVIRONMENTS.md` is authoritative.
+- **Staging / Production**: None today. Phase 1 voice rollout will trigger a deploy decision (Coolify on Main_host is the default VPS path per global `CLAUDE.md` VPS inventory; pick Vagaryvoice if voice CPU cost dominates).
+
+## External Services (MCPs, integrations)
+
+- **OpenAI** — Realtime API (current LLM + voice). Not routed via an MCP in this repo; direct HTTP from `backend/main.py`.
+- **PostgreSQL 15** — local Docker `db` service. No Supabase MCP in use (LOCAL pg only).
+- **n8n** — `https://n8n.chinmayramraika.in`; optional webhook path (`N8N_WEBHOOK_URL`).
+- **Deepgram + ElevenLabs** — **future** (Phase 1 only). Not wired today.
+- **Sentry** (org `vagary-life-pvt-ltd`, EU) — MCP available in global settings; no project created for training-bot yet. Wire before voice rollout.
+- **Linear** — no project created for this repo; create under SMPL562 workspace when Phase 1 kicks off.
+- **Figma / Stripe / Grafana / Loki** — not applicable at current stage.
+
+## Doc Maintainers
+
+- `CLAUDE.md` — Claude (sync via `~/.claude/scripts/sync-preambles.py` on VERSION bump); body edits require explicit user authorization per session.
+- `README.md` — **frozen** per `project-hygiene.md` § README curation. Claude edits only on explicit user request; user owns product positioning / setup voice.
+- `docs/ENVIRONMENTS.md` — user-maintained; Claude proposes diffs when envs / CI / ports change.
+- `.env.example` — Claude may update when a new env var is added by code change (invariant: never add a real secret value).
+
+## Deviations from Universal Laws
+
+- **No integration-test layer** — universal law prefers real-system integration tests, but this repo has no test suite today. CI enforces lint + build + Docker image only. Adding `pytest` + a minimal WebSocket/Deepgram-mock suite is a Phase 1 prerequisite.
+- **Frozen README** — deviates from default "living docs" expectation; user owns README per hygiene § README curation list.
+- **13 commits ahead of origin/main** (as of `commit:578d1f0`) — push blocked by SMPL562 PAT auth issue per global MEMORY.md. Do NOT attempt force-push; resume push once `$SMPL562_PAT` is re-validated.
+
+---
+
+## Security Rules
 - NEVER hardcode API keys, secrets, or credentials in any file
 - NEVER pass credentials as inline env vars in Bash commands
 - NEVER commit .env, .claude/settings.local.json, or .mcp.json to git
