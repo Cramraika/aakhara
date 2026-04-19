@@ -1,7 +1,7 @@
-# Training Bot (Hinglish Conversational AI Calling Bot)
+# Aakhara
 
 ## Claude Preamble
-<!-- VERSION: 2026-04-19-v10 -->
+<!-- VERSION: 2026-04-19-v11 -->
 <!-- SYNC-SOURCE: ~/.claude/conventions/universal-claudemd.md -->
 
 **Universal laws** (§4), **MCP routing** (§6), **Drift protocol** (§11), **Dynamic maintenance** (§14), **Capability resolution** (§15), **Subagent SKILL POLICY** (§16), **Session continuity** (§17), **Decision queue** (§17.a), **Attestation** (§18), **Cite format** (§19), **Three-way disagreement** (§20), **Pre-conditions** (§21), **Provenance markers** (§22), **Redaction rules** (§23), **Token budget** (§24), **Tool-failure fallback** (§25), **Prompt-injection rule** (§26), **Append-only discipline** (§27), **BLOCKED_BY markers** (§28), **Stop-loss ladder** (§29), **Business-invariant checks** (§30), **Plugin rent rubric** (§31), **Context ceilings** (§32), **Doc reference graph** (§33), **Anti-hallucination** (§34), **Past+Present+Future body** (§35), **Project trackers** (§36), **Doc ownership** (§37), **Archive-on-delete** (§38), **Sponsor + white-label** (§39), **Doc-vs-code drift** (§40), **Brand architecture** (§41).
@@ -12,30 +12,44 @@
 
 ## References
 
-- `~/.claude/conventions/universal-claudemd.md` — universal laws, MCP routing, capability resolution
+- `~/.claude/conventions/universal-claudemd.md` — universal laws, MCP routing, capability resolution, §41 Brand architecture (Aakhara positioning)
 - `~/.claude/conventions/project-hygiene.md` — doc placement, cleanup, scripts layout
+- `~/.claude/specs/2026-04-19-brand-rename-proposal.md` — Phase 3 rename rationale (training-bot → Aakhara)
 - `docs/ENVIRONMENTS.md` — local/Codespaces setup, CI pipeline summary, troubleshooting
+
+## Brand
+
+**Aakhara** — from Sanskrit/Hindi **"आखाड़ा" (akhada)** = wrestling / training arena. A place where wrestlers practice, spar, and sharpen their craft through repeated bouts before entering the real fight. The brand metaphor: each roleplay session = one bout in the akhada — a safe, repeatable drill ground where BDEs sharpen their sales craft before stepping onto a real call.
+
+Repo renamed from `training-bot` 2026-04-19 (Phase 3 fleet rename) when the product positioning locked: this is not a generic "bot" — it is the practice arena. Vagary Labs product brand. Domain **`aakhara.com` pending purchase**. Positioning TBD (see "Positioning decision pending" below).
+
+### Positioning decision pending
+Aakhara could sit in two places in the Vagary Labs portfolio:
+1. **Standalone Aakhara product** — own brand site (`aakhara.com`), own pricing, own GTM. Distinct identity from Vagary Voice.
+2. **Vagary Voice sub-product** — "Vagary Voice for Sales Training" with Aakhara as a named module inside the Vagary Voice platform at `vagaryvoice.cloud/aakhara`.
+
+Tradeoff: option 1 preserves brand clarity (practice-arena is a tight metaphor) but fragments go-to-market. Option 2 leverages Vagary Voice's commercial traction but dilutes the metaphor. Decision deferred — both paths leave this repo's code the same; only landing-page / billing wiring changes downstream.
 
 ## Product Overview
 
-| Product | Sales Training Roleplay Platform |
-|---------|----------------------------------|
-| **What it does** | Real-time voice-based Hinglish chatbot that trains sales reps through AI-powered roleplay simulations. Managers create training templates (scenarios), assign teams, and review AI-generated feedback on rep performance. |
-| **Who uses it** | Sales managers (template creation, team management, feedback review). ~300 BDEs / sales reps at Coding Ninjas (roleplay practice). Org admins (team structure). |
-| **Status** | Stable / Maintenance (Tier C). Local-only / Docker Compose; no production deploy yet. |
-| **Organization** | SMPL562 (GitHub remote) |
+| Product | Aakhara — Voice Sales-Training Roleplay Platform |
+|---------|--------------------------------------------------|
+| **What it does** | Real-time voice-based Hinglish sales roleplay. BDEs practice pitches against AI-simulated prospects; managers design scenarios (training templates), assign teams, and review AI-generated feedback on each "bout". |
+| **Who uses it** | Sales managers (template creation, team management, feedback review). ~300 BDEs / sales reps at Coding Ninjas (reference customer — roleplay practice). Org admins (team structure). |
+| **Status** | Stable / Maintenance (Tier C). Local-only / Docker Compose; no production deploy yet. Voice integration (Deepgram + ElevenLabs) is Phase 1 commitment. |
+| **Organization** | Cramraika (GitHub remote; migrated from SMPL562 2026-04-19) |
 
 ## Product Features and User Journeys
 
 ### 1. Template Creation (Manager Workflow)
-- **User journey**: Sales manager logs in, creates a training template defining the scenario (e.g., "cold call to a student interested in Data Science bootcamp"), sets goals and evaluation criteria, assigns it to a team.
+- **User journey**: Sales manager logs in, creates a training template (an "akhada scenario") defining the roleplay (e.g., "cold call to a student interested in Data Science bootcamp"), sets goals and evaluation criteria, assigns it to a team.
 - **Success signals**: Template saved to PostgreSQL. Team members can see and start the template. Scenario accurately represents real sales situations.
 - **Failure signals**: Template is too vague for the AI to simulate effectively. No team members assigned. Template creation errors (database write failures).
 
-### 2. Roleplay Session (BDE Workflow)
-- **User journey**: BDE selects a training template, starts a roleplay session. AI plays the customer role in Hinglish (matching real calling scenarios). BDE practices their pitch. Session targets 600ms-1s voice interaction latency.
+### 2. Roleplay Session — a "bout in the akhada" (BDE Workflow)
+- **User journey**: BDE selects a scenario, steps into the akhada — the AI plays the prospect role in Hinglish (matching real calling scenarios); BDE practices their pitch. Session targets 600ms-1s voice interaction latency.
 - **Success signals**: Conversation feels realistic. BDE completes the full scenario. Session logged with timestamps and transcript.
-- **Failure signals**: AI latency exceeds 1s (breaks conversational flow). AI breaks character or uses formal English. OpenAI API errors interrupt the session. BDE abandons mid-session.
+- **Failure signals**: AI latency exceeds 1s (breaks conversational flow). AI breaks character or uses formal English. LLM API errors interrupt the session. BDE abandons mid-session.
 
 ### 3. AI Feedback and Metrics (Performance Review)
 - **User journey**: After a roleplay session, the system generates feedback based on goal-based metrics. Manager reviews session reports to identify coaching opportunities across their team.
@@ -48,11 +62,12 @@
 - **Failure signals**: Data leaks across teams. Orphaned users without team assignments.
 
 ## Known Product Limitations
-- No real voice/speech integration yet (text-based roleplay simulating voice scenarios)
+- No real voice/speech integration yet (text-based roleplay simulating voice scenarios — Phase 1 commitment closes this)
 - No historical performance trending across sessions
-- Single OpenAI model dependency (no fallback provider)
+- Single LLM provider dependency (OpenAI today; Gemini / Grok fallback in voice-roadmap design)
 - No observability stack wired — only backend file logs (`backend/chatbot.log`)
 - No production deployment; Docker Compose is the only run mode
+- No standalone brand site yet — `aakhara.com` domain pending purchase; decision to be made (standalone vs Vagary Voice sub-product)
 
 ---
 
@@ -63,7 +78,8 @@
 - **Frontend**: React 18 + react-scripts 5 + react-router-dom 6 + axios + TailwindCSS 3
 - **DB**: PostgreSQL 15 (Docker `postgres:15` image, volume-backed)
 - **Runtime**: Docker Compose (4 services: backend, frontend, db, dev)
-- **LLM**: OpenAI Realtime API (via WebSocket) — `OPENAI_API_KEY`
+- **LLM (current)**: OpenAI Realtime API (via WebSocket) — `OPENAI_API_KEY`
+- **Voice stack (Phase 1, planned)**: **Deepgram** (STT; Nova-2/3 for Hinglish code-switching) + **ElevenLabs** (TTS; Hindi voices) + **Gemini/OpenAI** (LLM; pluggable)
 
 ### Active Role-Lanes
 - **Engineer** — FastAPI + WebSocket + SQLAlchemy; React 18 frontend; Docker Compose orchestration
@@ -82,6 +98,10 @@ Upstream / runtime dependencies:
 
 Downstream / deployment:
 - **None in production.** No Coolify / Render / Portainer stack wired. Docker Compose on developer machines only. Voice roadmap Phase 1 will require a deploy decision (likely Coolify on Main_host or Vagaryvoice per VPS inventory).
+
+Sibling / related:
+- `vagary-voice` — shared voice stack (Deepgram + ElevenLabs) if positioning locks to "sub-product" model; potential code-sharing opportunity for `backend/voice/*` module.
+- `bellring-server` / `bellring-extension` — adjacent sales-ops SaaS surface; both target BDEs but at different points in workflow (Bellring = celebration, Aakhara = practice).
 
 ### File Organization
 - Never save working files to root folder
@@ -124,25 +144,25 @@ CI runs on GitHub-hosted `ubuntu-latest` — lint-backend (flake8 E9/F63/F7 + pi
 
 ### Observability
 - **Current**: backend file logging only (`backend/chatbot.log`, gitignored). No Sentry / GlitchTip / Grafana / Uptime Kuma project. No metrics export. No distributed tracing.
-- **Gap acknowledged**: For a stable tool used by ~300 BDEs, at minimum wire Sentry (local MCP already configured at org `vagary-life-pvt-ltd`) for backend unhandled exceptions and front-end runtime errors. Phase 1 voice rollout will harden this need (STT/TTS latency + API-error rates must be observable).
+- **Gap acknowledged**: For a tool used by ~300 BDEs, at minimum wire Sentry (local MCP already configured at org `vagary-life-pvt-ltd`) for backend unhandled exceptions and front-end runtime errors. Phase 1 voice rollout will harden this need (STT/TTS latency + API-error rates must be observable).
 - **When to invoke Grafana MCP**: only after the stack graduates to VPS hosting; until then, file logs suffice.
 
 ---
 
 ## Roadmap / Planned
 
-The current build closes the gap between the product vision (real-time Hinglish voice roleplay, 600ms-1s latency, per README § Features) and the text-only MVP (per Known Product Limitations). Items below are ordered by dependency: voice integration unblocks the scoring and multi-tenant tracks.
+The current build closes the gap between the product vision — **Aakhara**, a real-time Hinglish voice practice arena with 600ms-1s latency — and the text-only MVP (per Known Product Limitations). Items below are ordered by dependency: voice integration unblocks the scoring and multi-tenant tracks.
 
 ### Phase 1 — Real voice integration (target: Q3 2026)
-Commitment against the "No real voice/speech integration yet" limitation.
+Commitment against the "No real voice/speech integration yet" limitation. This is also the phase where **Aakhara** earns its name — a true practice arena where BDEs can actually spar (audio, not text).
 
-- **Stack decision**: **Deepgram (STT) + ElevenLabs (TTS) + Grok/OpenAI (LLM)**. Deepgram chosen for STT because its Nova-2/3 models handle Hindi-English code-switching (Hinglish) natively with sub-300ms streaming latency — OpenAI Realtime and Whisper underperform on code-switched Indic audio. ElevenLabs chosen for TTS for natural Hindi voices (Aria/Adam + custom clones) that keep the "feels like a real prospect" bar BDEs need. LLM stays pluggable via existing `OPENAI_API_KEY` abstraction to also address the "single OpenAI dependency" limitation.
+- **Stack decision**: **Deepgram (STT) + ElevenLabs (TTS) + Gemini/OpenAI (LLM)**. Deepgram chosen for STT because its Nova-2/3 models handle Hindi-English code-switching (Hinglish) natively with sub-300ms streaming latency — OpenAI Realtime and Whisper underperform on code-switched Indic audio. ElevenLabs chosen for TTS for natural Hindi voices (Aria/Adam + custom clones) that keep the "feels like a real prospect" bar BDEs need. LLM stays pluggable via existing `OPENAI_API_KEY` abstraction to also address the "single LLM dependency" limitation.
 - **Architecture sketch**:
   ```
   Browser (WebRTC/MediaStream capture)
     ↔ FastAPI WebSocket (/ws/roleplay/{session_id})
       → Deepgram streaming STT  (partial + final transcripts)
-      → Grok/OpenAI chat (scenario prompt + Hinglish persona)
+      → Gemini/OpenAI chat (scenario prompt + Hinglish persona)
       → ElevenLabs streaming TTS (flush on sentence boundary)
     ↔ Browser audio playback (MediaSource / AudioWorklet)
   ```
@@ -150,7 +170,7 @@ Commitment against the "No real voice/speech integration yet" limitation.
   - New envs: `DEEPGRAM_API_KEY`, `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID`.
   - New PG table: `voice_turns` (session_id, role, audio_s3_key, transcript, latency_ms, created_at).
   - Fallback: if STT/TTS quota exhausted, session degrades to existing text chat (keeps BDE unblocked).
-- **Cost concern (BLOCKING for rollout sizing)**: At ~300 BDEs × 15 min/session × 4 sessions/week, voice processing runs ~300 × 60 min/week = 18,000 min/month. Deepgram streaming ≈ $0.0043/min + ElevenLabs turbo ≈ $0.18/1k chars (≈ $0.02/min assistant speech) ≈ **$0.03–0.05 per minute end-to-end, or ~$540–900/month** for full rollout. Grok/OpenAI LLM adds ~$200–400/month at current rates. Need explicit CN finance sign-off or usage caps (e.g., 2 sessions/week/BDE) before Phase 1 ships. Mitigations: cache common scenario openings, prefer Deepgram Nova-2 over Nova-3, batch TTS per sentence.
+- **Cost concern (BLOCKING for rollout sizing)**: At ~300 BDEs × 15 min/session × 4 sessions/week, voice processing runs ~300 × 60 min/week = 18,000 min/month. Deepgram streaming ≈ $0.0043/min + ElevenLabs turbo ≈ $0.18/1k chars (≈ $0.02/min assistant speech) ≈ **$0.03–0.05 per minute end-to-end, or ~$540–900/month** for full rollout. Gemini/OpenAI LLM adds ~$200–400/month at current rates. Need explicit CN finance sign-off or usage caps (e.g., 2 sessions/week/BDE) before Phase 1 ships. Mitigations: cache common scenario openings, prefer Deepgram Nova-2 over Nova-3, batch TTS per sentence.
 
 ### Phase 2 — Recording, transcript review, and automated scoring (target: Q4 2026)
 Commitment against the "No historical performance trending across sessions" limitation.
@@ -160,14 +180,15 @@ Commitment against the "No historical performance trending across sessions" limi
 - Manager dashboard gains: trendlines per BDE over N sessions, cohort comparison, flagged sessions for coaching review.
 - Output: weekly "Top 3 coaching opportunities" digest per manager (wired via existing n8n webhook integration).
 
-### Phase 3 — Multi-tenant / white-label (exploratory: 2027)
-If CN Product validates external demand (other bootcamps, sales-training vendors, enterprise sales teams).
+### Phase 3 — Multi-tenant / Aakhara commercial launch (exploratory: 2027)
+If CN Product validates external demand (other bootcamps, sales-training vendors, enterprise sales teams) AND positioning decision resolves (standalone Aakhara vs Vagary Voice sub-product).
 
 - Introduce `tenant_id` scoping across `users`, `teams`, `templates`, `sessions`, `voice_turns` (additive migration).
-- Per-tenant branding (logo, color tokens via Tailwind CSS vars), per-tenant LLM prompt shims (e.g., "US cold-calling" vs "CN bootcamp admissions").
+- Per-tenant branding (logo, color tokens via Tailwind CSS vars), per-tenant LLM prompt shims (e.g., "US cold-calling" vs "Indian edtech admissions").
 - Per-tenant API keys and isolated n8n workflows.
 - Billing surface: seat-based (per BDE/month) + usage-based voice overage — leverage existing Stripe MCP integration.
-- Commercial angle: position as "Roleplay-as-a-Service" for Indian edtech / SaaS SDR teams. Initial wedge = Hinglish voice (moat: Deepgram + ElevenLabs Hindi tuning + CN's scenario library).
+- **Brand + domain**: purchase `aakhara.com`, wire brand site (landing + signup + pricing). Alternative path: mount as `vagaryvoice.cloud/aakhara` if Vagary Voice sub-product positioning wins.
+- Commercial angle: position as "Practice-Arena-as-a-Service" for Indian edtech / SaaS SDR teams. Initial wedge = Hinglish voice (moat: Deepgram + ElevenLabs Hindi tuning + CN's scenario library).
 
 ### Phase 4 — Sponsor / integration angle (opportunistic)
 - Deepgram and ElevenLabs both run India developer programs with credits/co-marketing — pursue once Phase 1 ships and usage data exists.
@@ -191,9 +212,9 @@ If CN Product validates external demand (other bootcamps, sales-training vendors
 - **PostgreSQL 15** — local Docker `db` service. No Supabase MCP in use (LOCAL pg only).
 - **n8n** — `https://n8n.chinmayramraika.in`; optional webhook path (`N8N_WEBHOOK_URL`).
 - **Deepgram + ElevenLabs** — **future** (Phase 1 only). Not wired today.
-- **Sentry** (org `vagary-life-pvt-ltd`, EU) — MCP available in global settings; no project created for training-bot yet. Wire before voice rollout.
-- **Linear** — no project created for this repo; create under SMPL562 workspace when Phase 1 kicks off.
-- **Figma / Stripe / Grafana / Loki** — not applicable at current stage.
+- **Sentry** (org `vagary-life-pvt-ltd`, EU) — MCP available in global settings; no project created for aakhara yet. Wire before voice rollout.
+- **Linear** — no project created for this repo; create under Cramraika workspace when Phase 1 kicks off.
+- **Figma / Stripe / Grafana / Loki** — not applicable at current stage (Stripe wires in Phase 3 commercial launch).
 
 ## Doc Maintainers
 
@@ -205,8 +226,8 @@ If CN Product validates external demand (other bootcamps, sales-training vendors
 ## Deviations from Universal Laws
 
 - **No integration-test layer** — universal law prefers real-system integration tests, but this repo has no test suite today. CI enforces lint + build + Docker image only. Adding `pytest` + a minimal WebSocket/Deepgram-mock suite is a Phase 1 prerequisite.
-- **Frozen README** — deviates from default "living docs" expectation; user owns README per hygiene § README curation list.
-- **13 commits ahead of origin/main** (as of `commit:578d1f0`) — push blocked by SMPL562 PAT auth issue per global MEMORY.md. Do NOT attempt force-push; resume push once `$SMPL562_PAT` is re-validated.
+- **Frozen README** — deviates from default "living docs" expectation; user owns README per hygiene § README curation list. README still refers to "Training Bot" in places; sweep to "Aakhara" scheduled for Phase 1 kickoff.
+- **Normal push flow** — SMPL562 retired 2026-04-19; repo migrated to Cramraika (`Cramraika/aakhara`). Standard `gh` auth + pre-push hook.
 
 ---
 
