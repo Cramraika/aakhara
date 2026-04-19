@@ -10,6 +10,10 @@
 
 ---
 
+## Status / Tier
+
+**Tier C — stable / maintenance.** Text-based Hinglish sales roleplay in production-adjacent use at Coding Ninjas (~300 BDEs, reference customer). FastAPI + React + PostgreSQL on Docker Compose; no production VPS deploy yet. Phase 1 commitment: real voice (Deepgram + ElevenLabs). Active role-lanes limited to Engineer + voice-integration Architect; commercial GTM deferred until positioning decision resolves (standalone vs Vagary Voice sub-product).
+
 ## References
 
 - `~/.claude/conventions/universal-claudemd.md` — universal laws, MCP routing, capability resolution, §41 Brand architecture (Aakhara positioning)
@@ -215,6 +219,13 @@ If CN Product validates external demand (other bootcamps, sales-training vendors
 - **Sentry** (org `vagary-life-pvt-ltd`, EU) — MCP available in global settings; no project created for aakhara yet. Wire before voice rollout.
 - **Linear** — no project created for this repo; create under Cramraika workspace when Phase 1 kicks off.
 - **Figma / Stripe / Grafana / Loki** — not applicable at current stage (Stripe wires in Phase 3 commercial launch).
+
+## Past / Phase History
+
+- **Pre-rename (training-bot era)** — FastAPI 0.115 + SQLAlchemy 2.0 backend, React 18 CRA frontend, PostgreSQL 15 Docker image, OpenAI Realtime API. Shipped to ~300 BDEs at Coding Ninjas for text-based roleplay. Migrated to Cramraika 2026-04-19 during SMPL562 retirement.
+- **2026-04-18/19 — Preamble sync waves.** v4 → v11 propagation + body refresh: v8 15-point checklist applied (`0463316`), voice-roadmap + commercialization sections added (`578d1f0`). FUNDING.yml added during the same sweep (standard sponsor-ready hygiene for all OSS-candidate repos).
+- **2026-04-19 — Phase 3 rename.** `training-bot` → `aakhara` (`adf3b02`). Sanskrit "आखाड़ा" (practice arena) metaphor locks the positioning. README still references "Training Bot" in places; full text sweep to "Aakhara" scheduled for Phase 1 kickoff.
+- **Ongoing — Stable.** No active feature work; critical deps only (Dependabot / Renovate). Docker Compose remains the single run-mode.
 
 ## Doc Maintainers
 
