@@ -1,0 +1,43 @@
+# Aakhara
+
+**आखाड़ा** — voice sales-training roleplay for Business Development Executives. The practice arena where BDEs sharpen their pitch before every real call.
+
+**Status**: pre-launch
+**Brand**: Vagary Labs (tech/R&D division of Vagary Life Pvt Ltd)
+**Domain**: `aakhara.com` (pending purchase)
+**Positioning**: TBD — standalone OR Vagary Voice sub-product (operator decides)
+
+## What this repo is
+
+Currently: **landing page** for Aakhara.
+Eventually: full voice-roleplay app surface (when voice-stack integration lands).
+
+## Voice stack (planned)
+
+| Component | Vendor | Notes |
+|---|---|---|
+| Speech-to-text | Deepgram | Nova-3 vs Base — operator-Q on budget tier |
+| Text-to-speech | ElevenLabs | Hindi + English voices for India BDE market |
+| Roleplay LLM | Gemini 2.5 Flash or OpenAI GPT-4o | Low-latency conversational |
+
+## Brand identity
+
+The Sanskrit word **आखाड़ा** (aakhara) means a traditional Indian wrestling/practice arena — a place of disciplined sparring before the real fight. Aakhara brings that philosophy to sales: practice the call before you're on the call.
+
+- **Primary**: sienna-earth `#A0522D`
+- **Secondary**: chocolate `#D2691E`
+- **Accent**: wheat `#F5DEB3`
+- **Brand surface**: saddle-brown `#8B4513`
+
+See `docs/design/` for full token system + component fork notes from `host_page`.
+
+## Local dev
+
+```bash
+npm install
+npm run dev   # http://localhost:3000
+```
+
+## License
+
+MIT — see `LICENSE`.
