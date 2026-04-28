@@ -1,0 +1,31 @@
+# Components — Aakhara (fork of host_page)
+
+Inherits the full Kinetic Observatory component library from `host_page/docs/design/components.md`. Product-specific additions documented here.
+
+## Inherited (use as-is)
+
+- `<OrbitHero />` — full-viewport hero
+- `<Gauge />`, `<Dial />`, `<DataStrip />` — for in-app metrics (rep stats: calls/day, close-rate)
+- `<FeatureTile />` — glass-surface card
+- `<EyebrowLabel />` — uppercase eyebrow
+- `<KineticCTA />` — primary button
+- `<GridBackdrop />` — observatory grid overlay
+
+## Aakhara-specific (1–2 components)
+
+### `<ArenaHero />`
+Replaces `<OrbitHero />` for landing. Shows a stylized earthen-floor arena with a single spotlight (`--color-accent` wheat) and a silhouetted figure mid-practice. Subtle scroll-linked rotation of the spotlight, not the orbital constellation. Reduced-motion: static.
+
+### `<SparringCard />`
+In-app component (post-MVP, future): displays a roleplay scenario card — prospect persona, objection difficulty, voice (Hindi/English), expected duration. Glass-surface base from `<FeatureTile />` + `--color-brand` saddle-brown accent border.
+
+## Stack
+
+- React 18, Tailwind 3, shadcn/ui (new-york + neutral)
+- `lucide-react` icons
+- `framer-motion` for spotlight animation
+- `next-themes` for dark-default + light support
+
+## Future surface
+
+When voice-roleplay app launches (out of scope for this skeleton), expect WebRTC integration, audio waveform components (custom — not from upstream), and live STT-transcript display. None of those exist yet.

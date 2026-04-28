@@ -1,0 +1,55 @@
+import type { Config } from "tailwindcss";
+
+// Aakhara fork of host_page Kinetic Observatory.
+// 4-token swap: primary, secondary, accent, brand. Earth-tone arena palette.
+const config: Config = {
+  darkMode: ["class"],
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        card: { DEFAULT: "var(--card)", foreground: "var(--card-foreground)" },
+        popover: { DEFAULT: "var(--popover)", foreground: "var(--popover-foreground)" },
+        primary: { DEFAULT: "var(--color-primary)", foreground: "var(--primary-foreground)" },
+        secondary: { DEFAULT: "var(--color-secondary)", foreground: "var(--secondary-foreground)" },
+        accent: { DEFAULT: "var(--color-accent)", foreground: "var(--accent-foreground)" },
+        brand: { DEFAULT: "var(--color-brand)", foreground: "var(--brand-foreground)" },
+        muted: { DEFAULT: "var(--muted)", foreground: "var(--muted-foreground)" },
+        destructive: { DEFAULT: "var(--destructive)", foreground: "var(--destructive-foreground)" },
+        border: "var(--border)",
+        input: "var(--input)",
+        ring: "var(--ring)",
+        ko: {
+          primary: "var(--color-primary)",
+          "primary-dim": "var(--color-secondary)",
+          secondary: "var(--color-accent)",
+          surface: "#0e0e10",
+          "surface-container": "#131315",
+          "surface-container-high": "#1f1f22",
+          "surface-container-highest": "#262528",
+          "on-surface": "#f9f5f8",
+          "on-surface-variant": "#adaaad",
+          healthy: "#10b981",
+          warning: "#f59e0b",
+          error: "#ff716c",
+          unknown: "#71717a",
+        },
+      },
+      fontFamily: {
+        display: ["Manrope", "Inter", "system-ui", "sans-serif"],
+        body: ["Inter", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+};
+
+export default config;

@@ -1,0 +1,27 @@
+# Palette — Aakhara
+
+Token-swap fork of host_page Kinetic Observatory. Only 4 swap-points changed.
+
+## Brand swap-points (CSS custom-properties in `app/globals.css`)
+
+| Token | Hex | Role |
+|---|---|---|
+| `--color-primary` | `#A0522D` | sienna-earth — CTAs, instrument fills, active states |
+| `--color-secondary` | `#D2691E` | chocolate — deeper accent, links |
+| `--color-accent` | `#F5DEB3` | wheat — warm light, highlights |
+| `--color-brand` | `#8B4513` | saddle-brown — logo + brand surfaces |
+
+## Inherited from host_page (DO NOT modify)
+
+- `ko-surface` family: `#0e0e10`, `#131315`, `#1f1f22`, `#262528`
+- `ko-on-surface` / `ko-on-surface-variant`: `#f9f5f8` / `#adaaad`
+- `ko-healthy/warning/error/unknown`: `#10b981` / `#f59e0b` / `#ff716c` / `#71717a`
+- shadcn neutral HSL ramp (untouched)
+
+## Why earth tones
+
+The Sanskrit word आखाड़ा refers to a wrestling/practice arena — a literal earthen ground. The palette evokes that: sienna and saddle-brown for the arena floor, chocolate for the pit walls, wheat for the warm lamp-light over the practice mat. The voice-roleplay product is about disciplined preparation, not flashy gamification — earth tones convey grounded seriousness.
+
+## Reference
+
+Upstream: `~/Documents/Github/host_page/docs/design/palette.md` § Template swap points.
