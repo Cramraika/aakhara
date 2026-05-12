@@ -1,0 +1,24 @@
+# Design surface — Aakhara (fork of host_page Kinetic Observatory)
+
+Tier B per `~/.claude/conventions/design-system.md §2` — token-swap fork of the Tier A host_page design.
+
+## Fork lineage
+
+Forked from `~/Documents/Github/host_page/docs/design/` 2026-04-28 by PCN Session 11B.
+
+**Inherited (do NOT modify):**
+- Typography scale (Manrope display + Inter body + JetBrains Mono dials)
+- Component philosophy (`<OrbitHero />`, `<Gauge />`, `<Dial />`, `<FeatureTile />`, `<EyebrowLabel />`, `<KineticCTA />`)
+- shadcn posture (baseColor: neutral, style: new-york, cssVariables: true)
+- Surface family (`ko-surface-*`), semantic status (`ko-healthy/warning/error/unknown`)
+- Animation timings (150ms / 300ms / 600ms; ease-out-expo)
+- Accessibility posture (WCAG AA, focus rings, reduced-motion fallbacks)
+
+**Forked (see local files):**
+- `palette.md` — earth-tone arena palette
+- `brand.md` — Aakhara identity, voice, audience
+- `components.md` — fork notes + product-specific 1-2 components
+
+## Maintenance rule
+
+When host_page upstream evolves typography/surfaces/component primitives, mirror upstream. Only the 4 brand swap-points stay product-specific.

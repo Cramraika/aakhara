@@ -1,0 +1,56 @@
+# Aakhara — Voice Sales-Training Roleplay for BDEs
+
+This repo is the landing page (and eventual app surface) for **Aakhara** — voice sales-training roleplay for Business Development Executives. Sanskrit "आखाड़ा" = practice arena.
+
+## Claude Preamble
+**Universal laws** (§4), **MCP routing** (§6), **Drift protocol** (§11), **Capability resolution** (§15), **Subagent SKILL POLICY** (§16), **Cite format** (§19), **Anti-hallucination** (§34), **Brand architecture** (§41), **Design system integration** (§42).
+
+**Sources**: `~/.claude/conventions/universal-claudemd.md` + `~/.claude/conventions/project-hygiene.md` + `~/.claude/conventions/design-system.md`.
+
+---
+
+## Status & Tier
+
+**Tier B — fork of host_page Tier-A design.** Token-swap fork from Kinetic Observatory. Pre-launch.
+
+- **Positioning**: TBD — standalone product OR sub-product of Vagary Voice (operator decision pending in S11C interview)
+- Active cadence: pre-launch
+- Inherits: design tokens, CI gates (Trivy + Cosign), Renovate canonical, observability scrape pattern
+
+## Stack
+
+- **Framework**: Next.js 14 App Router (this repo: landing)
+- **Voice stack** (planned, separate service): Deepgram (STT) + ElevenLabs (TTS) + Gemini/OpenAI (roleplay LLM)
+- **UI**: React 18 + Tailwind 3 + shadcn/ui (new-york, baseColor neutral)
+- **Deploy**: Coolify (Vagary VPS) → docker-compose.yml + Dockerfile
+
+## Brand Tokens (4-token swap from host_page)
+
+- `primary`: `#A0522D` — sienna-earth (arena ground)
+- `secondary`: `#D2691E` — chocolate (depth)
+- `accent`: `#F5DEB3` — wheat (warm light)
+- `brand`: `#8B4513` — saddle-brown (logo + brand surfaces)
+
+## Key Directories
+
+- `app/` — Next.js App Router routes
+- `components/` — Product components
+- `lib/` — Utilities
+- `docs/design/` — Design surface (palette, brand, components fork notes)
+
+## Voice Stack (future)
+
+When voice-roleplay app surface lands (out of scope for landing skeleton):
+- Deepgram for STT (operator-Q: budget tier vs Nova)
+- ElevenLabs for TTS (Hindi + English voices for India BDE market)
+- Gemini 2.5 Flash or OpenAI GPT-4o for roleplay LLM (low-latency conversational)
+
+## Security & Secrets
+
+- NEVER hardcode API keys; use `.env.local` (gitignored)
+- Voice-stack keys via Infisical when app surface lands
+- Coolify env vars for prod
+
+## Past / Retired
+
+(none — pre-launch repo; renamed from `training-bot` 2026-04-19)
