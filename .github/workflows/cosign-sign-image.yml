@@ -10,7 +10,6 @@ name: Cosign image signing
 
 on:
   push:
-    branches: [main]
     tags: ["v*"]
   workflow_dispatch:
 
