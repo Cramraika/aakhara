@@ -29,6 +29,30 @@ logger.info("Python version: %s", sys.version)
 
 load_dotenv()
 
+# Sentry / Glitchtip error reporting (OW-106 wiring).
+# DSN comes from env SENTRY_DSN, sourced via Infisical
+#   main-host:/host-page/AAKHARA_GLITCHTIP_DSN
+# Silent no-op when unset (local dev / CI).
+_SENTRY_DSN = os.getenv("SENTRY_DSN")
+if _SENTRY_DSN:
+    try:
+        import sentry_sdk
+        from sentry_sdk.integrations.fastapi import FastApiIntegration
+        from sentry_sdk.integrations.starlette import StarletteIntegration
+
+        sentry_sdk.init(
+            dsn=_SENTRY_DSN,
+            environment=os.getenv("SENTRY_ENV", "production"),
+            release=os.getenv("SENTRY_RELEASE"),
+            integrations=[FastApiIntegration(), StarletteIntegration()],
+            traces_sample_rate=0.0,  # Glitchtip ignores traces; keep minimal.
+        )
+        logger.info("Sentry initialized")
+    except Exception as _e:  # pragma: no cover
+        logger.warning("Sentry init failed: %s", _e)
+else:
+    logger.info("SENTRY_DSN not set; error reporting disabled.")
+
 # Adjust DATABASE_URL for Codespaces
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost:5432/hinglish_chatbot" if os.getenv("CODESPACES") else "postgresql://user:password@db:5432/hinglish_chatbot")
 

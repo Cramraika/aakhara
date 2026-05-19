@@ -4,3 +4,6 @@ aiohttp==3.10.5
 python-dotenv==1.0.1
 psycopg2-binary==2.9.9
 sqlalchemy==2.0.32
+# Sentry / Glitchtip error reporting (OW-106 wiring; DSN from env SENTRY_DSN
+# sourced via Infisical main-host:/host-page/AAKHARA_GLITCHTIP_DSN)
+sentry-sdk[fastapi]==2.18.0
