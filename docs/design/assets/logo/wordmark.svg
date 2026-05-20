@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <rect width="1024" height="1024" fill="#F5F7FB"/>
+  <text x="512" y="512" font-family="Manrope, 'Noto Sans Devanagari', sans-serif" font-size="220"
+        font-weight="700" fill="#E8821A"
+        text-anchor="middle" dominant-baseline="central"
+        letter-spacing="-8">aakhara</text>
+  <text x="512" y="680" font-family="'Noto Sans Devanagari', Manrope, sans-serif" font-size="80"
+        font-weight="500" fill="#1E3A8A"
+        text-anchor="middle" dominant-baseline="central"
+        opacity="0.75">आखाड़ा</text>
+</svg>
