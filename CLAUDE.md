@@ -5,7 +5,7 @@
 **Tier:** C (text-based) → pre-launch A pending Phase 1 voice integration. **Bare-fork stack-up cluster** per dispatch §1.m.
 
 ## Claude Preamble
-<!-- VERSION: 2026-06-04-v51 -->
+<!-- VERSION: 2026-06-04-v52 -->
 <!-- SYNC-SOURCE: ~/.claude/conventions/universal-claudemd.md -->
 
 **Universal laws (§1–§55) load via user-level `~/.claude/conventions/` and are ALWAYS in context** — `universal-claudemd.summary.md` (≤50-line salient view, read FIRST) → `universal-claudemd.md` (full) + `project-hygiene.md`. Do **NOT** assume their content from memory; consult + verify before asserting (§34 / §43.6 / §43.7). The `## Active Cluster Playbooks` block below names this repo's situational playbooks **read-on-demand** (§49.10): Read the named playbook when its trigger fires — never guess its contents; always-load guardrails are inline. Sync: `~/.claude/scripts/sync-preambles.py` (manual cadence; run after any source edit).
