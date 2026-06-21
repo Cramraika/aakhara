@@ -99,3 +99,7 @@ Database: Verify:psql -h localhost -U user -d hinglish_chatbot -W
 
 
 
+
+## License
+
+Proprietary — © 2026 Vagary Labs. All rights reserved. See [LICENSE](LICENSE).
