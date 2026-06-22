@@ -44,3 +44,4 @@ Thumbs.db
 .serena/
 graphify-out/
 raw/
+.ast-grep/last-scan.log
