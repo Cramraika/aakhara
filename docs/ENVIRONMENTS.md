@@ -1,4 +1,4 @@
-# Training Bot - Environment Reference
+# Aakhara - Environment Reference
 
 ## Local Development
 
@@ -13,8 +13,8 @@
 
 ```bash
 # Clone
-git clone https://github.com/SMPL562/training-bot.git
-cd training-bot
+git clone https://github.com/Cramraika/aakhara.git
+cd aakhara
 
 # Configure environment
 cp .env.example .env

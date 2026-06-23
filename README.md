@@ -1,104 +1,66 @@
-Hinglish Conversational AI Calling Bot
-A real-time, voice-based Hinglish chatbot for sales training, with AI Coach features including template creation, team management, roleplay simulations, and feedback.
-Setup
+# Aakhara — Voice Sales-Training Roleplay
 
-Clone the Repository:
-git clone <your-repo-url>
-cd hinglish-chatbot
+**Aakhara** (Sanskrit आखाड़ा, *akhada* — a wrestling / training arena) is a Hinglish, voice-based
+sales-practice platform for Business Development Executives. Each roleplay session is one bout in
+the arena: a BDE practices objection-handling and closing against an AI prospect, then receives
+goal-based feedback.
 
+> **Status:** pre-launch. Runs via Docker Compose on developer machines / Codespaces; no production
+> deployment yet. The live voice pipeline today uses the **OpenAI Realtime API**; a Deepgram +
+> ElevenLabs voice stack is planned (Phase 1) — see `CLAUDE.md` for the roadmap.
 
-Environment Variables:
+## Stack
 
-Copy .env.example to .env in the root directory and add your OpenAI API key:OPENAI_API_KEY=your-api-key
-DATABASE_URL=postgresql://user:password@localhost:5432/hinglish_chatbot
+- **Backend:** FastAPI + SQLAlchemy + aiohttp (Python 3.11), in `backend/`
+- **Frontend:** React 18 + react-scripts (Create React App), in `frontend/`
+- **Database:** PostgreSQL 15
+- **LLM / voice (current):** OpenAI Realtime API over WebSocket (`OPENAI_API_KEY`)
+- **Runtime:** Docker Compose (`backend`, `frontend`, `db`, `dev`)
 
+## Quick Start (Docker)
 
-Alternatively, set OPENAI_API_KEY as a Codespace secret.
+```bash
+git clone https://github.com/Cramraika/aakhara.git
+cd aakhara
 
+# Configure environment
+cp .env.example .env
+# Edit .env — set OPENAI_API_KEY (required); DATABASE_URL has a Docker default
 
-Run with Docker:
+# Start all services
+docker compose up --build
+```
 
-Ensure Docker Compose is installed (see below for Codespaces).
-Start the services:docker-compose up --build
+| Service    | URL                   |
+|------------|-----------------------|
+| Frontend   | http://localhost:3000 |
+| Backend    | http://localhost:8000 |
+| PostgreSQL | localhost:5432        |
 
+For standalone (no-Docker) setup, Codespaces, the full environment-variable table, CI details, and
+troubleshooting, see **[`docs/ENVIRONMENTS.md`](docs/ENVIRONMENTS.md)**.
 
+## Project Layout
 
+| Path                 | Purpose                                                   |
+|----------------------|-----------------------------------------------------------|
+| `backend/`           | FastAPI app (`main.py`), models, CRUD, feedback, DB init. |
+| `frontend/`          | React (CRA) client (`src/App.jsx`).                       |
+| `docs/`              | Environment reference + design surface (`docs/design/`).  |
+| `docker-compose.yml` | Local/Codespaces orchestration of all four services.      |
 
-Codespaces Setup:
+## Features
 
-Create a Codespace for the repository.
-The .devcontainer/devcontainer.json installs docker-compose, postgresql-client, python3, nodejs, and dependencies.
-If in recovery mode (Alpine container), install docker-compose:sudo apk add docker-compose
+- Real-time Hinglish voice interaction.
+- AI Coach template system for configuring practice scenarios.
+- Team management and user roles.
+- Goal-based feedback with per-session metrics.
 
+## Development Notes
 
-Exit recovery mode by updating devcontainer.json and rebuilding:# In VS Code Command Palette (Ctrl+Shift+P)
-Codespaces: Rebuild Container
-
-
-
-
-
-Development
-
-Backend: FastAPI with PostgreSQL (backend/main.py).
-Frontend: React (frontend/src/App.jsx).
-Database: Initialize with backend/database.py.
-
-Testing
-
-Create templates via the UI.
-Start roleplay sessions and test Hinglish interactions.
-Check feedback reports for session metrics.
-Verify logs in backend/chatbot.log.
-
-Features
-
-Real-time Hinglish voice interaction (600ms-1s latency).
-AI Coach Template System for scenario configuration.
-Team management and user roles.
-Dynamic feedback with goal-based metrics.
-
-Troubleshooting
-
-Port Conflicts:
-Ensure dev service has no ports section to avoid conflicts with backend, frontend, db.
-Verify forwardPorts in devcontainer.json.
-
-
-.env Issues:
-Place .env in the root directory (hinglish-chatbot/.env).
-Check OPENAI_API_KEY and DATABASE_URL are set.
-
-
-Recovery Mode:
-Check creation.log:cat /workspaces/.codespaces/.persistedshare/creation.log
-
-
-Ensure devcontainer.json uses service: "dev".
-Rebuild (Ctrl+Shift+P > “Codespaces: Rebuild Container”).
-
-
-apt-get Not Found:
-In Alpine:sudo apk add <package>
-
-
-Restart Codespace for Ubuntu-based dev service.
-
-
-Docker Compose Not Found:
-Install in Alpine:sudo apk add docker-compose
-
-
-Or in Ubuntu:sudo apt-get update
-sudo apt-get install -y docker-compose
-
-
-
-
-Database: Verify:psql -h localhost -U user -d hinglish_chatbot -W
-
-
-
+- Backend logs to `backend/chatbot.log` (gitignored) — check it for WebSocket / OpenAI session issues.
+- Codespaces is supported via `.devcontainer/devcontainer.json`.
+- Design surface (palette, typography, components, voice) lives in `docs/design/` and is CI-validated.
 
 ## License
 
