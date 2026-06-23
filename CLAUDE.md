@@ -48,7 +48,7 @@ All TRIGGER-TO-WIRE except Wflw + Spec. No production deploy yet; Docker Compose
 
 - **Local / Codespaces:** Docker Compose (`backend` 8000, `frontend` 3000, `db` 5432, `dev` sleeps). `docs/ENVIRONMENTS.md` is authoritative.
 - **CI:** GitHub Actions on `ubuntu-latest` (Python 3.11) — flake8 + pip-audit (non-blocking) + npm install/build/audit + Docker build smoke.
-- **Backend logging only** — `backend/chatbot.log` (gitignored). No Sentry/GlitchTip/Grafana/Uptime Kuma yet.
+- **Backend logging** — `backend/chatbot.log` (gitignored). **Sentry/GlitchTip wired** — `backend/main.py` initializes `sentry-sdk[fastapi]` when `SENTRY_DSN` is set (no-ops if unset); `requirements.txt` pins `sentry-sdk[fastapi]==2.18.0`. No Grafana/Uptime Kuma yet (no production deploy).
 - **Repo migrated** to Cramraika 2026-04-19 (from SMPL562). Standard `gh` push.
 
 ## Stack
