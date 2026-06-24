@@ -27,6 +27,9 @@ hold without a Read.
 
 <!-- END PLAYBOOKS BLOCK -->
 
+## License classification: commercial-bound
+Aakhara is a paid voice sales-training product (CN reference customer ~300 BDEs). Per `commercial-bound.md`: GitNexus (PolyForm-NC) graph output MUST NOT be committed/shipped; use CGC (`codegraphcontext`) for any shippable graph artefact. This in-repo line is the routing signal §50.2 wants so agents pick cgc-over-gitnexus without re-deriving the license posture.
+
 ## Identity & Role
 
 `aakhara` is the **Aakhara Voice Sales-Training Roleplay Platform** — Hinglish sales practice arena for BDEs (~300 BDEs at Coding Ninjas reference customer). Sanskrit "आखाड़ा" (akhada) = wrestling / training arena; each roleplay session = one bout in the akhada. Repo renamed from `training-bot` 2026-04-19. Domain `aakhara.com` pending purchase.
