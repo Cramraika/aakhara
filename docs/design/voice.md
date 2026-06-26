@@ -1,3 +1,55 @@
+---
+# Machine-readable brand-voice instance — schema per platform-docs
+# 02-governance/brand-voice.md §V.2 (L1.3). Derived (not copied) from the prose below.
+# tone_axes + voice_attributes are DRAFT seeds (spec L1.4) — operator/brand-owner RATIFY pending (§V.7).
+brand_voice:
+  brand: aakhara                      # canonical brand id (parked product; pre-launch)
+  entity_umbrella: "{{legal-entity}}" # thin billing/legal umbrella — NEVER a hardcoded registered string
+  derives_from: "~/.claude/conventions/Vagary-Brand-Guidelines.pdf §13"  # reference, not mandate
+  independence: family                # shares Vagary Labs family DNA (spec L1.4)
+  last_reviewed: 2026-06-26
+  owner: chinmay
+  status: draft-unratified            # axis values + attributes are illustrative seeds (spec L1.4), not ratified
+
+  # tone dimensions: 1..5 position on each named axis (DRAFT seeds — operator-ratify)
+  tone_axes:
+    formality:        3   # measured; formal English to managers, Hinglish-warm to reps
+    warmth:           4   # encouraging, coaching framing
+    authority:        4   # training authority; cites the metric
+    playfulness:      2   # professional training, not a game (no XP/badges)
+    energy:           3   # measured; "saffron is already warm — voice stays measured"
+    directness:       4   # coaching imperatives ("practice", "try again", "next round")
+    technicality:     2   # plain coaching language; AI is substrate not pitch
+
+  voice_attributes: [coaching, encouraging, Sanskrit/Hindi-native]   # spec L1.4 seed
+
+  audience: "BDEs / sales trainees (rep-facing) + L&D managers (manager-facing)"
+  reading_level: grade-9
+  primary_locale: en-IN
+  locales: [en-IN, hi-IN]
+
+  lexicon:
+    prefer:   [practice, work on, try again, next round, progress, "Shabaash"]
+    avoid:    [failed, wrong, "XP", coins, badges]
+    banned:   []
+    capitalization:
+      product_name: "Aakhara"
+      never_lowercase: true
+
+  do:
+    - "Use coaching verbs: practice, work on, try again, next round."
+    - "Cite the metric when giving feedback (your objection-handling improved 15%)."
+    - "Switch to Hindi/Hinglish for rep-facing emotional moments; keep manager-facing copy formal English."
+    - "Frame setbacks as training, not failure (that scenario needs another round)."
+  dont:
+    - "Don't use 'failed' / 'wrong' in rep feedback — use 'incomplete', 'needs work', 'try again'."
+    - "Don't gamify with XP / coins / badges — this is professional training, not a game."
+    - "Don't use heavy Sanskrit-only Hindi — the audience is Hinglish-comfortable."
+    - "Don't over-celebrate — voice stays measured."
+
+  surfaces: [landing, in-app-copy, voice-feedback, manager-dashboard]
+---
+
 # Voice — Aakhara
 
 ## Tone adjectives
