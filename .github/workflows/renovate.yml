@@ -25,6 +25,7 @@ permissions:
 
 jobs:
   renovate:
+    # Docker container action -> Linux only; cannot run on the macOS self-hosted runners (ADR-033).
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   build-sign-push:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNNER_TYPE || 'self-hosted' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

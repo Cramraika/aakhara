@@ -49,7 +49,7 @@ permissions:
 
 jobs:
   annotate:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNNER_TYPE || 'self-hosted' }}
     timeout-minutes: 5
     steps:
       - name: Resolve commit SHA + short SHA
