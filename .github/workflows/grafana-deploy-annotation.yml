@@ -54,12 +54,21 @@ jobs:
     steps:
       - name: Resolve commit SHA + short SHA
         id: sha
+        # env-mapped rather than interpolated, which is the same idiom this file already uses for
+        # the annotation step below. `${{ inputs.commit_sha }}` written inline is SPLICED INTO THE
+        # SHELL TEXT before bash sees it, so an input containing shell metacharacters executes as
+        # code — semgrep's run-shell-injection. Reaching it needs dispatch rights on the repo, which
+        # is why this is not urgent, but the repo is PUBLIC and the fix is a two-line move.
+        # Referencing "$INPUT_SHA" instead means the value is data to bash, never syntax.
+        env:
+          INPUT_SHA: ${{ inputs.commit_sha }}
+          EVENT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          if [ -n "${{ inputs.commit_sha }}" ]; then
-            FULL_SHA="${{ inputs.commit_sha }}"
+          if [ -n "${INPUT_SHA:-}" ]; then
+            FULL_SHA="${INPUT_SHA}"
           else
-            FULL_SHA="${{ github.sha }}"
+            FULL_SHA="${EVENT_SHA}"
           fi
           SHORT_SHA="${FULL_SHA:0:7}"
           echo "full=$FULL_SHA" >> "$GITHUB_OUTPUT"

@@ -127,11 +127,29 @@ jobs:
                 --metrics=off
             fi
 
-      - name: Upload SARIF artifact
+      # Sink changed from upload-artifact to upload-sarif on the PUBLIC repos only.
+      #
+      # The artifact sink had NO READER. `grep -rn "semgrep-sarif"` across the workspace returned 9
+      # hits, every one a producer and zero consumers (control: the same grep for "upload-artifact"
+      # returns 20 files). A SARIF file that nothing opens is a scan whose findings exist and are
+      # never seen — the display-layer twin of a gate that cannot fail, which is the other half of
+      # this same commit series.
+      #
+      # upload-sarif routes findings into GitHub code scanning, which is free on public repos.
+      # `code-scanning/alerts` returns 404 "no analysis found" here rather than 403, so the feature
+      # is available and simply has nothing in it yet. The six private repos return 403 "Code
+      # scanning is not enabled" and keep the artifact sink.
+      #
+      # Checked what would become world-readable before switching, since this publishes findings:
+      # aakhara 19 findings and bellring-extension 6, all `warning`, zero ERROR — mutable action
+      # tags, containers running as root, missing SRI, renovate config. The two that mattered
+      # (run-shell-injection, hardcoded-secret) were fixed first and confirmed cleared against a
+      # pre-fix positive control. And the source of a public repo is already readable; an index of
+      # its lint findings is not new disclosure.
+      - name: Upload SARIF to code scanning
         if: always()
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: github/codeql-action/upload-sarif@v3
         with:
-          name: semgrep-sarif
-          path: results.sarif
-          if-no-files-found: warn
+          sarif_file: results.sarif
+          category: semgrep
