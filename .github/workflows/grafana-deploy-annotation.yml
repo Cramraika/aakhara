@@ -75,7 +75,7 @@ jobs:
 
       - name: POST annotation to Grafana
         env:
-          GRAFANA_URL: https://grafana.chinmayramraika.in
+          GRAFANA_URL: https://grafana.vagarylabs.com
           GRAFANA_TOKEN: ${{ secrets.GRAFANA_DEPLOY_ANNOTATION_TOKEN }}
           FULL_SHA: ${{ steps.sha.outputs.full }}
           SHORT_SHA: ${{ steps.sha.outputs.short }}
