@@ -49,7 +49,7 @@ jobs:
     if: (github.actor != 'dependabot[bot]')
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           # fetch-depth 0 because the gate below diffs against a BASELINE commit.
           # The default of 1 leaves github.event.before outside the object store, so the
