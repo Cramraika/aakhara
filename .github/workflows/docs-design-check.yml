@@ -13,6 +13,7 @@ on:
 jobs:
   check:
     runs-on: ${{ vars.RUNNER_TYPE || 'self-hosted' }}
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
