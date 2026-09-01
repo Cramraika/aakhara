@@ -92,9 +92,17 @@ jobs:
           DISPATCH_TEXT: ${{ inputs.annotation_text }}
         run: |
           set -euo pipefail
+          # A DEPLOY ANNOTATION IS TELEMETRY, NOT A GATE. Nothing depends on it landing, and the
+          # deploy it describes has already happened — so a failure here must not present as a failed
+          # pipeline. It stayed fatal and turned main red on a repository whose deploy succeeded, which
+          # is how an operator learns to read red as noise.
+          #
+          # Minting the token is operator-only (Grafana admin -> service-account token) and is already
+          # tracked: platform-docs 11-compliance/operator-oob-tracker.md, "Grafana deploy-annotation
+          # SA-mint", OW-206, 4 of 7 repos done. So this is reported LOUDLY and never silently.
           if [ -z "${GRAFANA_TOKEN:-}" ]; then
-            echo "::error::GRAFANA_DEPLOY_ANNOTATION_TOKEN secret is not set."
-            exit 1
+            echo "::warning title=deploy annotation skipped::GRAFANA_DEPLOY_ANNOTATION_TOKEN is not set, so no annotation was written. The deploy itself is unaffected. Minting the token is operator-only (Grafana admin -> SA token) and tracked as OW-206."
+            exit 0
           fi
           TEXT="${DISPATCH_TEXT:-Deploy aakhara @ ${SHORT_SHA}}"
           BODY=$(jq -n \
@@ -118,6 +126,7 @@ jobs:
           cat /tmp/anno.json
           echo
           if [ "$HTTP" != "200" ]; then
-            echo "::error::Grafana annotation rejected (HTTP $HTTP)"
-            exit 1
+            # 401 means the stored token is expired or revoked, not that the deploy failed.
+            echo "::warning title=deploy annotation rejected::Grafana returned HTTP $HTTP, so no annotation was written. The deploy itself is unaffected. A 401 means GRAFANA_DEPLOY_ANNOTATION_TOKEN is expired or revoked — re-mint it (Grafana admin -> SA token, operator-only, tracked as OW-206)."
+            exit 0
           fi
