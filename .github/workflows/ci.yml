@@ -27,18 +27,25 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          # 3.12.13, not 3.11.15. The self-hosted runner's tool cache carries 3.12.10/3.12.11/3.12.13
-          # and nothing else, and actions/setup-python cannot fetch 3.11.15 for this macOS/arm64 pair —
-          # the job failed on its setup step with "version '3.11.15' with architecture 'arm64' was not
-          # found", so the lint has not run at all for some time.
-          #
-          # It also closes a gap worth naming: this repository SHIPS python:3.14-slim, so CI was
-          # checking a version three minors behind production while production's own image build was
-          # separately failing. 3.12 is what the runner has; the Dockerfile moves to 3.12 in the same
-          # PR, so CI and the image now agree instead of diverging in two directions.
-          python-version: "3.12.13"
+      # NOT actions/setup-python. Its macOS installer hardcodes /Users/runner/hostedtoolcache, which
+      # is unwritable on this self-hosted runner, so it ignores the seeded cache and tries to DOWNLOAD —
+      # and no build is published for this macOS/arm64 pair. That is why the job failed on its setup
+      # step, first for 3.11.15 and then, after I re-pinned it, identically for 3.12.13. The version was
+      # never the cause; the action was.
+      #
+      # This is the recipe vagary-platform already uses for the same runner, with its own runbook at
+      # docs/runbooks/self-hosted-runner-python-toolcache.md: point PATH and pythonLocation straight at
+      # the pre-seeded cache and skip the installer entirely.
+      - name: Set up Python 3.12 (self-hosted seeded cache, no download)
+        run: |
+          PYBIN="${RUNNER_TOOL_CACHE:-$HOME/actions-runners/_tool}/Python/3.12.13/arm64/bin"
+          if [ ! -x "$PYBIN/python" ]; then
+            echo "::error::seeded Python missing at $PYBIN — seed the runner tool cache (see vagary-platform scripts/ci/seed-runner-python-toolcache.sh)"
+            exit 1
+          fi
+          echo "$PYBIN" >> "$GITHUB_PATH"
+          echo "pythonLocation=${RUNNER_TOOL_CACHE:-$HOME/actions-runners/_tool}/Python/3.12.13/arm64" >> "$GITHUB_ENV"
+          "$PYBIN/python" --version
           cache: 'pip'
       - name: Install linter
         run: pip install flake8 pip-audit
