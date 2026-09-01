@@ -46,7 +46,6 @@ jobs:
           echo "$PYBIN" >> "$GITHUB_PATH"
           echo "pythonLocation=${RUNNER_TOOL_CACHE:-$HOME/actions-runners/_tool}/Python/3.12.13/arm64" >> "$GITHUB_ENV"
           "$PYBIN/python" --version
-          cache: 'pip'
       - name: Install linter
         run: pip install flake8 pip-audit
       - name: Run flake8
